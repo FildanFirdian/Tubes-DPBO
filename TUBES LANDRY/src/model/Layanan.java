@@ -2,6 +2,7 @@ package model;
 
 public abstract class Layanan {
 
+    private String test;
     private int idLayanan;
     private String namaLayanan;
     private double hargaPerKg;
