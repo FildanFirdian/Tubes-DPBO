@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+package main;
 
-
-/**
- *
- * @author Azizi
- */
 public class Pelanggan extends User {
     private int poinMember;
     private boolean statusMember;
@@ -40,17 +32,17 @@ public class Pelanggan extends User {
     
     @Override
     public void login(){
-        System.out.println("Pelanggan " + super.getUsername() + " berhasil login."); 
+        System.out.println("Pelanggan " + " dengan username " + super.getUsername() + " berhasil login."); 
     }
     
     @Override
     public void logout(){
-        System.out.println("Pelanggan " + super.getUsername() + " berhasil logout");
+        System.out.println("Pelanggan " + " dengan username " + super.getUsername() + " berhasil logout");
     }
     
     @Override
     public void tampilkanInfo(){
-        System.out.println("/=== Data Pelanggan ===");
+        System.out.println("=== Data Pelanggan ===");
         System.out.println("ID User : " + super.getIdUser());
         System.out.println("Nama : " + super.getName());
         System.out.println("No Hp : " + super.getNoHp());
