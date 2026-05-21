@@ -1,53 +1,109 @@
 package actor;
+import java.util.ArrayList;
+
 
 public class Pelanggan extends User {
-    private int poinMember;
-    private boolean statusMember;
-    
-    public Pelanggan(int idUser, String nama, String noHp, String alamat, String username, String password, int poinMember, boolean statusMember){
-        super(idUser,nama,noHp,alamat,username,password);
-        this.poinMember = poinMember;
-        this.statusMember = statusMember;
+    private Member member;
+    private ArrayList<Transaksi> riwayatTransaksi;
+
+    public Pelanggan(int idUser, String nama, String noHP, String alamat, String username, String password) {
+        super(idUser, nama, noHP, alamat, username, password);
+        this.member = null;
+        this.riwayatTransaksi = new ArrayList<>();
     }
-    
-    public void daftarMember(){
-        if (statusMember == true){
-            System.out.println(super.getName() + " berhasil daftar sebagai member");
-        }else{
-            System.out.println(super.getName() + "gagal mendaftar sebagai member");
+
+    public void tampilDataDiri() {
+        System.out.println("=== DATA DIRI PELANGGAN ===");
+        System.out.println("ID User  : " + getIdUser());
+        System.out.println("Nama     : " + getNama());
+        System.out.println("No HP    : " + getNoHP());
+        System.out.println("Alamat   : " + getAlamat());
+        System.out.println("Username : " + getUsername());
+
+        if (member != null && member.cekKeanggotaan()) {
+            System.out.println("Status Member : Aktif");
+            System.out.println("Level Member  : " + member.getLevelMember());
+            System.out.println("Poin Member   : " + member.getPoin());
+        } else {
+            System.out.println("Status Member : Bukan Member");
         }
     }
-    
-    public void lihatStatus(){
-        if(statusMember){
-            System.out.println(super.getName() + " adalah member aktif");
-        }else{
-            System.out.println(super.getName() + " belum menjadi member");
+
+    public void tampilkanSemuaPesanan() {
+        System.out.println("=== SELURUH PESANAN PELANGGAN ===");
+
+        if (riwayatTransaksi.isEmpty()) {
+            System.out.println("Belum ada pesanan.");
+            return;
+        }
+
+        for (Transaksi transaksi : riwayatTransaksi) {
+            transaksi.tampilkanDetailTransaksi();
+            System.out.println("--------------------------------");
         }
     }
-    
-    public void Payment(){
-        System.out.println(super.getName() + " sudah melakukan transaksi");
+
+    public Transaksi cariPesananByIdTransaksi(int idTransaksi) {
+        for (Transaksi transaksi : riwayatTransaksi) {
+            if (transaksi.getIdTransaksi() == idTransaksi) {
+                return transaksi;
+            }
+        }
+
+        return null;
     }
-    
-    @Override
-    public void login(){
-        System.out.println("Pelanggan " + " dengan username " + super.getUsername() + " berhasil login."); 
+
+    public void tampilkanPesananByIdTransaksi(int idTransaksi) {
+        Transaksi transaksi = cariPesananByIdTransaksi(idTransaksi);
+
+        if (transaksi != null) {
+            System.out.println("=== PESANAN DITEMUKAN ===");
+            transaksi.tampilkanDetailTransaksi();
+        } else {
+            System.out.println("Pesanan dengan ID Transaksi " + idTransaksi + " tidak ditemukan.");
+        }
     }
-    
-    @Override
-    public void logout(){
-        System.out.println("Pelanggan " + " dengan username " + super.getUsername() + " berhasil logout");
+
+    public void tambahTransaksi(Transaksi transaksi) {
+        if (transaksi != null) {
+            riwayatTransaksi.add(transaksi);
+            System.out.println("Transaksi berhasil ditambahkan ke riwayat pelanggan.");
+        } else {
+            System.out.println("Transaksi tidak boleh kosong.");
+        }
     }
-    
+
+    public ArrayList<Transaksi> lihatRiwayatTransaksi() {
+        return riwayatTransaksi;
+    }
+
+    public StatusLaundry lihatStatusLaundry(Transaksi transaksi) {
+        if (transaksi != null) {
+            return transaksi.getStatusLaundry();
+        }
+
+        return null;
+    }
+
+    public void tambahPoinMember(int jumlahPoin) {
+        if (member != null) {
+            member.tambahPoin(jumlahPoin);
+            System.out.println("Poin member berhasil ditambahkan.");
+        } else {
+            System.out.println("Pelanggan belum menjadi member.");
+        }
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
     @Override
-    public void tampilkanInfo(){
-        System.out.println("=== Data Pelanggan ===");
-        System.out.println("ID User : " + super.getIdUser());
-        System.out.println("Nama : " + super.getName());
-        System.out.println("No Hp : " + super.getNoHp());
-        System.out.println("Alamat : " + super.getAlamat());
-        System.out.println("Username : " + super.getUsername());
-        System.out.println("Password : " + super.getPassword());
+    public void tampilInfo() {
+        tampilDataDiri();
     }
 }

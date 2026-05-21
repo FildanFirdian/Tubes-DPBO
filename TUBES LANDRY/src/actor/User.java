@@ -1,9 +1,6 @@
     package actor;
 
-/**
- *
- * @author Azizi
- */
+
 public abstract class User {
     private int idUser;
     private String name;
@@ -70,12 +67,12 @@ public abstract class User {
         this.password = password;
     }
     
-    public void login(){
-        System.out.println("Sudah memiliki akun");
+    public boolean login(String username, String alamat){
+        return this.username.equals(username) && this.alamat.equals(alamat);
     }
     
     public void logout(){
-        System.out.println("Anda sudah keluar dari akun");
+        System.out.println(name + " Berhasil keluar dari akun");
     }
     
     public abstract void tampilkanInfo();
