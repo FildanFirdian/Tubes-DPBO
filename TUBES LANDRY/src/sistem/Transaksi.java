@@ -17,7 +17,7 @@ public class Transaksi {
     private double kembalian;
     private String statusBayar;
     
-    public Transaksi(int idTransaksi, Date tanggalMasuk, Date tanggalSelesai, Pelanggan pelanggan{
+    public Transaksi(int idTransaksi, Date tanggalMasuk, Date tanggalSelesai, Pelanggan pelanggan){
         this.idTransaksi = idTransaksi;
         this.tanggalMasuk = tanggalMasuk;
         this.tanggalSelesai = tanggalSelesai;
@@ -29,11 +29,11 @@ public class Transaksi {
     }
     
     public double hitungTotalHarga(){
-        
+        return 0;
     }
 
     public double terapkanDiskon(Diskon diskon){
-        
+        return 0;
     }
 
     public void inputPembayaran(double jumlahBayar){
@@ -41,7 +41,7 @@ public class Transaksi {
     }
 
     public double hitungKembalian(){
-        
+        return 0;
     }
 
     public void ubahStatus(StatusLaundry statusLaundry){
