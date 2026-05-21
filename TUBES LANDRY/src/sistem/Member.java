@@ -18,5 +18,17 @@ public class Member{
     public void tambahPoin(int jumlah){
         
     }
-         
+    
+    public boolean cekKeanggotaan(){
+        return true;
+    }
+
+    public int getPoin() {
+        return poin;
+    }
+
+    public int getLevelMember() {
+        return levelMember;
+    }
+    
 }

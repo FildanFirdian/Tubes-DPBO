@@ -15,7 +15,16 @@ public class Diskon {
         this.syaratDiskon = syaratDiskon;
     }
     
-    public double hitungDiskon(double Total){
-        return persenDiskon;
+    public double hitungPotongan(double Total){
+        return Total * (persenDiskon / 100);
     }
+
+    public String getNamaDiskon() {
+        return namaDiskon;
+    }
+
+    public String getSyaratDiskon() {
+        return syaratDiskon;
+    }
+
 }
