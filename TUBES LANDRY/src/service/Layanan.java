@@ -32,19 +32,24 @@ public abstract class Layanan {
         this.estimasiHari = estimasiHari;
     }
 
+    public abstract double hitungBiaya(double berat);
+
+    public abstract String deskripsiLayanan();
+
     public double getHargaPerKg() {
         return hargaPerKg;
     }
 
-    public int getEstimasiHari() {
-        return estimasiHari;
+    public int getIdLayanan() {
+        return idLayanan;
     }
 
     public String getNamaLayanan() {
         return namaLayanan;
     }
 
-    public abstract double hitungBiaya(double berat);
+    public int getEstimasiHari() {
+        return estimasiHari;
+    }
 
-    public abstract String deskripsiLayanan();
 }
