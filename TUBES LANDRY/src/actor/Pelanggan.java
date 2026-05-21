@@ -1,4 +1,4 @@
-package main;
+package actor;
 
 public class Pelanggan extends User {
     private int poinMember;

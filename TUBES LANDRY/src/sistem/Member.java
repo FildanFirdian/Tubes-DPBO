@@ -1,4 +1,4 @@
-package model;
+package sistem;
 
 public class Member{
     private int idMember;

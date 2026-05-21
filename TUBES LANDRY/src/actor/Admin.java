@@ -1,4 +1,4 @@
-package main;
+package actor;
 public class Admin extends User {
     public Admin(int idUser, String nama, String noHp, String alamat, String username, String password){
         super(idUser,nama,noHp,alamat,username,password);

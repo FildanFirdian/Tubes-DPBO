@@ -1,4 +1,4 @@
-package model;
+package sistem;
 
 public class Pembayaran {
     private int idPembayaran;

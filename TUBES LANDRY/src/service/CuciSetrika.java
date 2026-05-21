@@ -1,12 +1,14 @@
-package model;
+package service;
 
-public class CuciKering extends Layanan {
+public class CuciSetrika extends Layanan {
 
     private String jenisProses;
+    private double biayaTambahan;
 
-    public CuciKering(int idLayanan, String namaLayanan,
+    public CuciSetrika(int idLayanan, String namaLayanan,
             double hargaPerKg, int estimasiHari,
-            String jenisProses) {
+            String jenisProses,
+            double biayaTambahan) {
 
         super(idLayanan, namaLayanan, hargaPerKg, estimasiHari);
 
@@ -14,7 +16,12 @@ public class CuciKering extends Layanan {
             jenisProses = "Reguler";
         }
 
+        if (biayaTambahan < 0) {
+            biayaTambahan = 0;
+        }
+
         this.jenisProses = jenisProses;
+        this.biayaTambahan = biayaTambahan;
     }
 
     @Override
@@ -24,12 +31,12 @@ public class CuciKering extends Layanan {
             return 0;
         }
 
-        return berat * getHargaPerKg();
+        return (berat * getHargaPerKg()) + biayaTambahan;
     }
 
     @Override
     public String deskripsiLayanan() {
-        return "Cuci Kering - " + jenisProses +
+        return "Cuci Setrika - " + jenisProses +
                 " (" + getEstimasiHari() + " Hari)";
     }
 }
