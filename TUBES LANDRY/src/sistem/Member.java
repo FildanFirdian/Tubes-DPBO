@@ -1,33 +1,34 @@
 package sistem;
+import java.util.Date;
 
 public class Member{
     private int idMember;
-    private int levelMember;
+    private String levelMember;
     private int poin;
-    private int masaAktif;
+    private Date masaAktif;
     
-    public Member(){}
     
-    public Member(int idMember, int levelMember, int poin, int masaAktif){
+    public Member(int idMember, String levelMember, int poin, Date masaAktif){
         this.idMember = idMember;
         this.levelMember = levelMember;
         this.poin = poin;
         this.masaAktif = masaAktif;
     }
     
-    public void tambahPoin(int jumlah){
-        
+    public void tambahPoin(int jumlahPoin){
+        this.poin += jumlahPoin;
     }
     
     public boolean cekKeanggotaan(){
-        return true;
+        Date sekarang = new Date();
+        return masaAktif.after(sekarang);
     }
 
     public int getPoin() {
         return poin;
     }
 
-    public int getLevelMember() {
+    public String getLevelMember() {
         return levelMember;
     }
     
