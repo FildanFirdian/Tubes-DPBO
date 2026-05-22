@@ -20,6 +20,7 @@ public class Nota implements CetakDokumen{
       
     }  
 
+    @Override
     public void cetakDokumen() {
     System.out.println("Nota Sedang dicetak...");
     }
