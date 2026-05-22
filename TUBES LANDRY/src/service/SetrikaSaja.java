@@ -1,13 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
+
 
 package service;
 
-/**
- *
- * @author A C E R
- */
 public class SetrikaSaja extends Layanan {
 
     private String jenisProses;
