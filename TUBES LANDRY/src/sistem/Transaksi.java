@@ -3,84 +3,72 @@ import java.util.ArrayList;
 import java.util.Date;
 import actor.Pelanggan;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 public class Transaksi {
+
     private int idTransaksi;
-    private Date tanggalMasuk;
-    private Date tanggalSelesai; 
+    private Date tanggal;
     private Pelanggan pelanggan;
+
     private ArrayList<DetailTransaksi> daftarDetail;
-    private Diskon diskon;
+
     private StatusLaundry statusLaundry;
+
     private double totalHarga;
-    private double totalBayar;
     private double jumlahBayar;
     private double kembalian;
-    private String statusBayar;
-    
-    public Transaksi(int idTransaksi, Date tanggalMasuk, Date tanggalSelesai, Pelanggan pelanggan){
+
+    public Transaksi(int idTransaksi, Date tanggal, Pelanggan pelanggan) {
         this.idTransaksi = idTransaksi;
-        this.tanggalMasuk = tanggalMasuk;
-        this.tanggalSelesai = tanggalSelesai;
+        this.tanggal = tanggal;
         this.pelanggan = pelanggan;
-    }
-    
-    public void tambahDetail(DetailTransaksi detail){
-        daftarDetail.add(detail);   
-    }
-    
-    public double hitungTotalHarga(){
-        return 0;
+
+        daftarDetail = new ArrayList<>();
     }
 
-    public double terapkanDiskon(Diskon diskon){
-        return 0;
-    }
-
-    public void inputPembayaran(double jumlahBayar){
-        
-    }
-
-    public double hitungKembalian(){
-        return 0;
-    }
-
-    public void ubahStatus(StatusLaundry statusLaundry){
-        this.statusLaundry = statusLaundry;
+    public void tambahDetail(DetailTransaksi detail) {
+        daftarDetail.add(detail);
     }
 
     public int getIdTransaksi() {
         return idTransaksi;
     }
 
-    public Pelanggan getPelanggan() {
-        return pelanggan;
+    public double hitungTotalHarga() {
+
+        totalHarga = 0;
+
+        for (DetailTransaksi detail : daftarDetail) {
+            totalHarga += detail.getSubtotal();
+        }
+
+        return totalHarga;
+    }
+
+    public void prosesPembayaran(double jumlahBayar) {
+
+        this.jumlahBayar = jumlahBayar;
+
+        hitungTotalHarga();
+
+        kembalian = jumlahBayar - totalHarga;
+    }
+
+    public void ubahStatus(StatusLaundry status) {
+        this.statusLaundry = status;
     }
 
     public double getTotalHarga() {
         return totalHarga;
     }
 
-    public double getTotalBayar() {
-        return totalBayar;
-    }
-
-    public double getJumlahBayar() {
-        return jumlahBayar;
-    }
-
     public double getKembalian() {
         return kembalian;
     }
 
-    public String getStatusBayar() {
-        return statusBayar;
-    }
-
-    public StatusLaundry getStatusLaundry() {
-        return statusLaundry;
-    }
-
-    public ArrayList<DetailTransaksi> getDaftarDetail() {
-        return daftarDetail;
+    public Pelanggan getPelanggan() {
+        return pelanggan;
     }
 }

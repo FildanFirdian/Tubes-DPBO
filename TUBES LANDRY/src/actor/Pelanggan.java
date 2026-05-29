@@ -5,52 +5,61 @@ import sistem.Transaksi;
 import sistem.SistemLaundry;
 
 public class Pelanggan extends User {
-    private Member member;
-    private ArrayList<Transaksi> riwayatTransaksi;
 
-    public Pelanggan(int idUser, String nama, String noHP, String alamat, String username, String password) {
-        super(idUser, nama, noHP, alamat, username, password);
-        this.riwayatTransaksi = new ArrayList<>();
-        this.member = null;
+    private int idPelanggan;
+    private String nama;
+    private String noHP;
+    private String alamat;
+
+    public Pelanggan(int idPelanggan, String nama, String noHP, String alamat,int idUser,String username, String password) {
+        super(idUser, username, password);
+        this.idPelanggan = idPelanggan;
+        this.nama = nama;
+        this.noHP = noHP;
+        this.alamat = alamat;
     }
 
-    public void tambahTransaksi(Transaksi transaksi) {
-        riwayatTransaksi.add(transaksi);
+    public int getIdPelanggan() {
+        return idPelanggan;
     }
 
-    public ArrayList<Transaksi> lihatRiwayatTransaksi() {
-        return riwayatTransaksi;
+    public String getNama() {
+        return nama;
     }
 
-    public StatusLaundry lihatStatusLaundry(Transaksi transaksi) {
-        return transaksi.getStatusLaundry();
+    public void setNama(String nama) {
+        this.nama = nama;
     }
 
-    public void tambahPoinMember(int jumlahPoin) {
-        if (member != null) {
-            member.tambahPoin(jumlahPoin);
-        } else {
-            System.out.println("Pelanggan belum memiliki member.");
-        }
+    public String getNoHP() {
+        return noHP;
     }
 
-    public void setMember(Member member) {
-        this.member = member;
+    public void setNoHP(String noHP) {
+        this.noHP = noHP;
     }
 
-    public Member getMember() {
-        return member;
+    public String getAlamat() {
+        return alamat;
+    }
+
+    public void setAlamat(String alamat) {
+        this.alamat = alamat;
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + idPelanggan +
+                ", Nama: " + nama +
+                ", No HP: " + noHP +
+                ", Alamat: " + alamat;
     }
 
     @Override
     public void tampilInfo() {
-        super.tampilInfo();
-
-        if (member != null) {
-            System.out.println("Level Member : " + member.getLevelMember());
-            System.out.println("Poin Member  : " + member.getPoin());
-        } else {
-            System.out.println("Belum menjadi member.");
-        }
+        System.out.println("ID Pelanggan : " + idPelanggan);
+        System.out.println("Nama         : " + nama);
+        System.out.println("No HP        : " + noHP);
+        System.out.println("Alamat       : " + alamat);
     }
 }
