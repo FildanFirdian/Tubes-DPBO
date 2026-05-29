@@ -1,6 +1,5 @@
 package actor;
 import java.util.ArrayList;
-import sistem.Member;
 import sistem.Transaksi;
 import sistem.SistemLaundry;
 

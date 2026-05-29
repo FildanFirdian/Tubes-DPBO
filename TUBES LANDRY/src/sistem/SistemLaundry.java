@@ -5,7 +5,6 @@ import sistem.Transaksi;
 import sistem.Nota;
 import sistem.LaporanTransaksi;
 import sistem.DetailTransaksi;
-import sistem.Diskon;
 import sistem.StatusLaundry;
 import actor.Admin;
 import actor.Pelanggan;
@@ -31,9 +30,7 @@ public class SistemLaundry {
 
     public void tambahPelanggan(Pelanggan pelanggan) {
         daftarPelanggan.put(
-                pelanggan.getIdPelanggan(),
-                pelanggan
-        );
+                pelanggan.getIdPelanggan(),pelanggan);
     }
 
     public Pelanggan cariPelanggan(int id) {

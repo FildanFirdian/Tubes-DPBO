@@ -8,7 +8,6 @@ import service.Layanan;
 import sistem.SistemLaundry;
 import sistem.Transaksi;
 import sistem.DetailTransaksi;
-import sistem.Diskon;
 import sistem.StatusLaundry;
 import sistem.Nota;
 import sistem.LaporanTransaksi;

@@ -103,6 +103,6 @@ public class Main {
         Nota nota = new Nota(transaksi);
 
         System.out.println();
-        nota.cetakNota();
+        nota.cetakDokumen();
     }
 }
