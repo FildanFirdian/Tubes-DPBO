@@ -9,7 +9,7 @@ import sistem.Transaksi;
 import sistem.Nota;
 import sistem.LaporanTransaksi;
 import sistem.DetailTransaksi;
-import sistem.Diskon;
+
 import sistem.StatusLaundry;
 import service.CuciKering;
 import service.CuciSetrika;
