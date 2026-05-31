@@ -1,30 +1,18 @@
 package main;
 
-import actor.Admin;
+
 import actor.Pelanggan;
-import actor.User;
 import service.Layanan;
 import sistem.SistemLaundry;
 import sistem.Transaksi;
 import sistem.Nota;
-import sistem.LaporanTransaksi;
 import sistem.DetailTransaksi;
-
 import sistem.StatusLaundry;
 import service.CuciKering;
 import service.CuciSetrika;
-import service.Layanan;
-import sistem.Transaksi;
-import java.util.HashMap;
-import java.util.ArrayList;
+
 import java.util.Date;
-import actor.Admin;
-import actor.Pelanggan;
-import actor.User;
-import sistem.SistemLaundry;
-import sistem.Transaksi;
-import sistem.Nota;
-import java.util.Date;
+
 
 public class Main {
 

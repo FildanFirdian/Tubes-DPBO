@@ -1,10 +1,7 @@
 package sistem;
 import java.util.ArrayList;
 import java.util.Date;
-import actor.Pelanggan;
-
-import java.util.ArrayList;
-import java.util.Date;
+import actor.Pelanggan; 
 
 public class Transaksi {
 
