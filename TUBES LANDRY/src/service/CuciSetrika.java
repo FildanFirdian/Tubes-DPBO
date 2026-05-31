@@ -2,7 +2,6 @@ package service;
 
 public class CuciSetrika extends Layanan {
 
-    private String jenisProses;
     private double biayaTambahan;
 
     public CuciSetrika(int idLayanan, String namaLayanan,
@@ -10,17 +9,24 @@ public class CuciSetrika extends Layanan {
             String jenisProses,
             double biayaTambahan) {
 
-        super(idLayanan, namaLayanan, hargaPerKg, estimasiHari);
-
-        if (jenisProses == null || jenisProses.isEmpty()) {
-            jenisProses = "Reguler";
-        }
+        super(idLayanan, namaLayanan, hargaPerKg, estimasiHari, jenisProses);
 
         if (biayaTambahan < 0) {
             biayaTambahan = 0;
         }
 
-        this.jenisProses = jenisProses;
+        this.biayaTambahan = biayaTambahan;
+    }
+
+    public double getBiayaTambahan() {
+        return biayaTambahan;
+    }
+
+    public void setBiayaTambahan(double biayaTambahan) {
+        if (biayaTambahan < 0) {
+            biayaTambahan = 0;
+        }
+
         this.biayaTambahan = biayaTambahan;
     }
 
@@ -36,7 +42,7 @@ public class CuciSetrika extends Layanan {
 
     @Override
     public String deskripsiLayanan() {
-        return "Cuci Setrika - " + jenisProses +
+        return "Cuci Setrika - " + getJenisProses() +
                 " (" + getEstimasiHari() + " Hari)";
     }
 }

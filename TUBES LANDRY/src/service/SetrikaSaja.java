@@ -1,9 +1,7 @@
-
 package service;
 
 public class SetrikaSaja extends Layanan {
 
-    private String jenisProses;
     private double diskon;
 
     public SetrikaSaja(int idLayanan, String namaLayanan,
@@ -11,26 +9,13 @@ public class SetrikaSaja extends Layanan {
             String jenisProses,
             double diskon) {
 
-        super(idLayanan, namaLayanan, hargaPerKg, estimasiHari);
-
-        if (jenisProses == null || jenisProses.isEmpty()) {
-            jenisProses = "Reguler";
-        }
+        super(idLayanan, namaLayanan, hargaPerKg, estimasiHari, jenisProses);
 
         if (diskon < 0) {
             diskon = 0;
         }
 
-        this.jenisProses = jenisProses;
         this.diskon = diskon;
-    }
-
-    public String getJenisProses() {
-        return jenisProses;
-    }
-
-    public void setJenisProses(String jenisProses) {
-        this.jenisProses = jenisProses;
     }
 
     public double getDiskon() {
@@ -41,6 +26,7 @@ public class SetrikaSaja extends Layanan {
         if (diskon < 0) {
             diskon = 0;
         }
+
         this.diskon = diskon;
     }
 
@@ -59,16 +45,8 @@ public class SetrikaSaja extends Layanan {
 
     @Override
     public String deskripsiLayanan() {
-        return "Setrika Saja - " + jenisProses +
+        return "Setrika Saja - " + getJenisProses() +
                 " | Diskon: " + (diskon * 100) + "%" +
                 " (" + getEstimasiHari() + " Hari)";
     }
 }
-    
-    
-
-    
-    
-    
-    
-

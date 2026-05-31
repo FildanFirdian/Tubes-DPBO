@@ -6,9 +6,11 @@ public abstract class Layanan {
     private String namaLayanan;
     private double hargaPerKg;
     private int estimasiHari;
+    private String jenisProses;
 
     public Layanan(int idLayanan, String namaLayanan,
-            double hargaPerKg, int estimasiHari) {
+            double hargaPerKg, int estimasiHari,
+            String jenisProses) {
 
         if (idLayanan <= 0) {
             idLayanan = 1;
@@ -26,10 +28,15 @@ public abstract class Layanan {
             estimasiHari = 0;
         }
 
+        if (jenisProses == null || jenisProses.isEmpty()) {
+            jenisProses = "Reguler";
+        }
+
         this.idLayanan = idLayanan;
         this.namaLayanan = namaLayanan;
         this.hargaPerKg = hargaPerKg;
         this.estimasiHari = estimasiHari;
+        this.jenisProses = jenisProses;
     }
 
     public abstract double hitungBiaya(double berat);
@@ -52,4 +59,7 @@ public abstract class Layanan {
         return estimasiHari;
     }
 
+    public String getJenisProses() {
+        return jenisProses;
+    }
 }

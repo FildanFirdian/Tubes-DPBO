@@ -2,19 +2,11 @@ package service;
 
 public class CuciKering extends Layanan {
 
-    private String jenisProses;
-
     public CuciKering(int idLayanan, String namaLayanan,
             double hargaPerKg, int estimasiHari,
             String jenisProses) {
 
-        super(idLayanan, namaLayanan, hargaPerKg, estimasiHari);
-
-        if (jenisProses == null || jenisProses.isEmpty()) {
-            jenisProses = "Reguler";
-        }
-
-        this.jenisProses = jenisProses;
+        super(idLayanan, namaLayanan, hargaPerKg, estimasiHari, jenisProses);
     }
 
     @Override
@@ -29,7 +21,7 @@ public class CuciKering extends Layanan {
 
     @Override
     public String deskripsiLayanan() {
-        return "Cuci Kering - " + jenisProses +
+        return "Cuci Kering - " + getJenisProses() +
                 " (" + getEstimasiHari() + " Hari)";
     }
 }
