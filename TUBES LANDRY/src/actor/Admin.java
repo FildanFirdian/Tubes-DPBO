@@ -1,16 +1,5 @@
 package actor;
 
-import java.util.Collection;
-import java.util.Date;
-
-import service.Layanan;
-
-import sistem.SistemLaundry;
-import sistem.Transaksi;
-import sistem.DetailTransaksi;
-import sistem.StatusLaundry;
-import sistem.Nota;
-import sistem.LaporanTransaksi;
 
 public class Admin extends User {
 
