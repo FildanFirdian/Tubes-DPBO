@@ -1,7 +1,6 @@
 package sistem;
 
 public class StatusLaundry {
-
     private int idStatus;
     private String namaStatus;
 
@@ -10,7 +9,11 @@ public class StatusLaundry {
         this.namaStatus = namaStatus;
     }
 
-    public String getNamaStatus() {
+    public int getIdStatus() { return idStatus; }
+    public String getNamaStatus() { return namaStatus; }
+
+    @Override
+    public String toString() {
         return namaStatus;
     }
 }

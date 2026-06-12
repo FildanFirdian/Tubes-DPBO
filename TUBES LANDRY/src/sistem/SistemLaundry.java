@@ -1,16 +1,6 @@
 package sistem;
 import actor.Pelanggan;
-import actor.User;
-import sistem.Transaksi;
-import sistem.Nota;
-import sistem.LaporanTransaksi;
-import sistem.DetailTransaksi;
-import sistem.StatusLaundry;
-import actor.Admin;
-import actor.Pelanggan;
-import actor.User;
 import service.Layanan;
-import sistem.Transaksi;
 import java.util.HashMap;
 
 public class SistemLaundry {

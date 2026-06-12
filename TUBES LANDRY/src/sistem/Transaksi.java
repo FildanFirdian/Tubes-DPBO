@@ -1,71 +1,44 @@
 package sistem;
+
+import actor.Pelanggan;
 import java.util.ArrayList;
-import java.util.Date;
-import actor.Pelanggan; 
+import java.util.List;
 
 public class Transaksi {
-
     private int idTransaksi;
-    private Date tanggal;
     private Pelanggan pelanggan;
+    private String tanggal;          
+    private StatusLaundry statusLaundry; 
+    private double jumlahBayar;      
+    private List<DetailTransaksi> detailList = new ArrayList<>();
 
-    private ArrayList<DetailTransaksi> daftarDetail;
-
-    private StatusLaundry statusLaundry;
-
-    private double totalHarga;
-    private double jumlahBayar;
-    private double kembalian;
-
-    public Transaksi(int idTransaksi, Date tanggal, Pelanggan pelanggan) {
+    // KONTRAKTOR UTAMA: Dipanggil oleh JavaFX Main App
+    public Transaksi(int idTransaksi, Pelanggan pelanggan) {
         this.idTransaksi = idTransaksi;
-        this.tanggal = tanggal;
         this.pelanggan = pelanggan;
-
-        daftarDetail = new ArrayList<>();
+        this.tanggal = java.time.LocalDate.now().toString(); // Default hari ini
+        this.statusLaundry = new StatusLaundry(1, "Diproses"); 
     }
 
     public void tambahDetail(DetailTransaksi detail) {
-        daftarDetail.add(detail);
-    }
-
-    public int getIdTransaksi() {
-        return idTransaksi;
-    }
-
-    public double hitungTotalHarga() {
-
-        totalHarga = 0;
-
-        for (DetailTransaksi detail : daftarDetail) {
-            totalHarga += detail.getSubtotal();
-        }
-
-        return totalHarga;
-    }
-
-    public void prosesPembayaran(double jumlahBayar) {
-
-        this.jumlahBayar = jumlahBayar;
-
-        hitungTotalHarga();
-
-        kembalian = jumlahBayar - totalHarga;
-    }
-
-    public void ubahStatus(StatusLaundry status) {
-        this.statusLaundry = status;
-    }
-
-    public double getTotalHarga() {
-        return totalHarga;
+        detailList.add(detail);
+        this.jumlahBayar = getTotalHarga();
     }
 
     public double getKembalian() {
+        double kembalian = jumlahBayar - getTotalHarga();
+        if (kembalian < 0){
+            return 0;
+        }
         return kembalian;
     }
 
-    public Pelanggan getPelanggan() {
-        return pelanggan;
+    public int getIdTransaksi() { return idTransaksi; }
+    public Pelanggan getPelanggan() { return pelanggan; }
+    public String getTanggal() { return tanggal; }
+    public StatusLaundry getStatusLaundry() { return statusLaundry; }
+    
+    public double getTotalHarga() {
+        return detailList.stream().mapToDouble(DetailTransaksi::getSubtotal).sum();
     }
 }

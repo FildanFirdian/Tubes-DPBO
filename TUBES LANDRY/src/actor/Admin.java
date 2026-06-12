@@ -25,4 +25,9 @@ public class Admin extends User {
         System.out.println("ID Admin : " + idAdmin);
         System.out.println("Nama     : " + namaAdmin);
     }
+
+    public String getNamaAdmin() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getNamaAdmin'");
+    }
 }

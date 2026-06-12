@@ -1,6 +1,264 @@
 package main;
 
+import actor.Admin;
+import actor.Pelanggan;
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
+import service.*;
+import sistem.*;
 
-public class Main {
+import java.util.ArrayList;
 
+public class Main extends Application {
+
+    private Stage primaryStage;
+    private Admin currentAdmin = new Admin(1, "admin", "admin123", "Super Admin");
+    
+    // In-Memory Database Dummy Data
+    private ObservableList<Pelanggan> dataPelanggan = FXCollections.observableArrayList();
+    private ObservableList<Transaksi> dataTransaksi = FXCollections.observableArrayList();
+    private ObservableList<Layanan> daftarLayanan = FXCollections.observableArrayList();
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+        this.primaryStage.setTitle("Sistem Manajemen Laundry Modern");
+        
+        // Seed Awal Data Layanan
+        daftarLayanan.addAll(
+            new CuciKering(101, "Cuci Kering Reguler", 6000, 2, "Mesin Otomatis"),
+            new CuciSetrika(102, "Cuci Setrika Kilat", 9000, 1, "Setrika Uap", 2000),
+            new SetrikaSaja(103, "Setrika Hemat", 4000, 2, "Manual", 0.10) // Diskon 10%
+        );
+        
+        // Seed Awal Data Pelanggan
+        dataPelanggan.add(new Pelanggan(1, "Budi Santoso", "0812345678", "Bandung", 10, "budi", "pwd"));
+
+        showLoginScene();
+    }
+
+    private void showLoginScene() {
+        VBox root = new VBox(15);
+        root.setPadding(new Insets(30));
+        root.setAlignment(Pos.CENTER);
+        root.getStyleClass().add("login-container");
+
+        Label titleLabel = new Label("LAUNDRY ENGINE LOGIN");
+        titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setAlignment(Pos.CENTER);
+
+        TextField txtUsername = new TextField();
+        txtUsername.setPromptText("Username");
+        PasswordField txtPassword = new PasswordField();
+        txtPassword.setPromptText("Password");
+
+        grid.add(new Label("Username:"), 0, 0);
+        grid.add(txtUsername, 1, 0);
+        grid.add(new Label("Password:"), 0, 1);
+        grid.add(txtPassword, 1, 1);
+
+        Button btnLogin = new Button("Login System");
+        Label lblError = new Label();
+        lblError.setStyle("-fx-text-fill: red;");
+
+        btnLogin.setOnAction(e -> {
+            if (currentAdmin.login(txtUsername.getText(), txtPassword.getText())) {
+                showDashboardScene();
+            } else {
+                lblError.setText("Kombinasi User/Password Salah!");
+            }
+        });
+
+        root.getChildren().addAll(titleLabel, grid, btnLogin, lblError);
+        Scene scene = new Scene(root, 400, 300);
+        loadCss(scene);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private void showDashboardScene() {
+        BorderPane root = new BorderPane();
+        
+        // Top Toolbar Menu
+        HBox topBar = new HBox(15);
+        topBar.setPadding(new Insets(15));
+        topBar.setStyle("-fx-background-color: #2c3e50;");
+        Label welcomeLabel = new Label("Halo, Admin: " + currentAdmin.getNamaAdmin());
+        welcomeLabel.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+        topBar.getChildren().add(welcomeLabel);
+        root.setTop(topBar);
+
+        TabPane tabPane = new TabPane();
+        tabPane.getTabs().addAll(createPelangganTab(), createTransaksiTab(), createLaporanTab());
+        root.setCenter(tabPane);
+
+        Scene scene = new Scene(root, 850, 600);
+        loadCss(scene);
+        primaryStage.setScene(scene);
+    }
+
+    private Tab createPelangganTab() {
+        Tab tab = new Tab("Kelola Pelanggan");
+        tab.setClosable(false);
+
+        GridPane formGrid = new GridPane();
+        formGrid.setPadding(new Insets(15));
+        formGrid.setHgap(10);
+        formGrid.setVgap(10);
+
+        TextField txtNama = new TextField();
+        TextField txtHP = new TextField();
+        TextField txtAlamat = new TextField();
+
+        formGrid.add(new Label("Nama Pelanggan:"), 0, 0);
+        formGrid.add(txtNama, 1, 0);
+        formGrid.add(new Label("No HP:"), 0, 1);
+        formGrid.add(txtHP, 1, 1);
+        formGrid.add(new Label("Alamat:"), 0, 2);
+        formGrid.add(txtAlamat, 1, 2);
+
+        Button btnAdd = new Button("Simpan Pelanggan");
+        formGrid.add(btnAdd, 1, 3);
+
+        TableView<Pelanggan> table = new TableView<>(dataPelanggan);
+        TableColumn<Pelanggan, Integer> colId = new TableColumn<>("ID");
+        colId.setCellValueFactory(new PropertyValueFactory<>("idPelanggan"));
+        TableColumn<Pelanggan, String> colNama = new TableColumn<>("Nama");
+        colNama.setCellValueFactory(new PropertyValueFactory<>("nama"));
+        TableColumn<Pelanggan, String> colHP = new TableColumn<>("No HP");
+        colHP.setCellValueFactory(new PropertyValueFactory<>("noHP"));
+        TableColumn<Pelanggan, String> colAlamat = new TableColumn<>("Alamat");
+        colAlamat.setCellValueFactory(new PropertyValueFactory<>("alamat"));
+        table.getColumns().addAll(colId, colNama, colHP, colAlamat);
+
+        btnAdd.setOnAction(e -> {
+            if (!txtNama.getText().isEmpty()) {
+                int newId = dataPelanggan.size() + 1;
+                dataPelanggan.add(new Pelanggan(newId, txtNama.getText(), txtHP.getText(), txtAlamat.getText(), newId, "user"+newId, "pass"));
+                txtNama.clear(); txtHP.clear(); txtAlamat.clear();
+            }
+        });
+
+        VBox layout = new VBox(10, formGrid, table);
+        layout.setPadding(new Insets(10));
+        tab.setContent(layout);
+        return tab;
+    }
+
+    private Tab createTransaksiTab() {
+        Tab tab = new Tab("Transaksi Baru");
+        tab.setClosable(false);
+
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(15));
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        ComboBox<Pelanggan> cbPelanggan = new ComboBox<>(dataPelanggan);
+        ComboBox<Layanan> cbLayanan = new ComboBox<>(daftarLayanan);
+        TextField txtBerat = new TextField();
+        Label lblSubtotal = new Label("Subtotal: Rp0");
+        lblSubtotal.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+        grid.add(new Label("Pilih Pelanggan:"), 0, 0);
+        grid.add(cbPelanggan, 1, 0);
+        grid.add(new Label("Pilih Jenis Layanan:"), 0, 1);
+        grid.add(cbLayanan, 1, 1);
+        grid.add(new Label("Berat (Kg):"), 0, 2);
+        grid.add(txtBerat, 1, 2);
+        grid.add(lblSubtotal, 1, 3);
+
+        Button btnHitung = new Button("Hitung Biaya");
+        Button btnSimpan = new Button("Simpan & Selesai Transaksi");
+        HBox actionBox = new HBox(10, btnHitung, btnSimpan);
+        grid.add(actionBox, 1, 4);
+
+        btnHitung.setOnAction(e -> {
+            try {
+                Layanan lay = cbLayanan.getValue();
+                double berat = Double.parseDouble(txtBerat.getText());
+                if (lay != null) {
+                    lblSubtotal.setText("Subtotal: Rp" + lay.hitungBiaya(berat) + " (" + lay.deskripsiLayanan() + ")");
+                }
+            } catch (NumberFormatException ex) {
+                lblSubtotal.setText("Input berat tidak valid!");
+            }
+        });
+
+        btnSimpan.setOnAction(e -> {
+            Pelanggan pel = cbPelanggan.getValue();
+            Layanan lay = cbLayanan.getValue();
+            try {
+                double berat = Double.parseDouble(txtBerat.getText());
+                if (pel != null && lay != null) {
+                    Transaksi trans = new Transaksi(dataTransaksi.size() + 1001, pel);
+                    DetailTransaksi detail = new DetailTransaksi(trans.getIdTransaksi(), berat, lay);
+                        trans.tambahDetail(detail);
+                        dataTransaksi.add(trans);
+                    DetailTransactionBuilder(trans, berat, lay);
+                    dataTransaksi.add(trans);
+                    
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Transaksi Berhasil Ditambahkan!");
+                    alert.showAndWait();
+                    txtBerat.clear();
+                    lblSubtotal.setText("Subtotal: Rp0");
+                }
+            } catch (Exception ex) {
+                // Silently safe fallback inside JavaFX
+            }
+        });
+
+        tab.setContent(grid);
+        return tab;
+    }
+    
+    private void DetailTransactionBuilder(Transaksi trans, double berat, Layanan lay) {
+        DetailTransaksi detail = new DetailTransaksi(trans.getIdTransaksi(), berat, lay);
+        trans.tambahDetail(detail);
+    }
+
+    private Tab createLaporanTab() {
+        Tab tab = new Tab("Laporan Pendapatan");
+        tab.setClosable(false);
+
+        TextArea txtAreaLog = new TextArea();
+        txtAreaLog.setEditable(false);
+        txtAreaLog.setStyle("-fx-font-family: 'Courier New';");
+
+        Button btnRefresh = new Button("Cetak & Muat Dokumen Laporan");
+        btnRefresh.setOnAction(e -> {
+            LaporanTransaksi engineLaporan = new LaporanTransaksi(new ArrayList<>(dataTransaksi));
+            txtAreaLog.setText(engineLaporan.getFormattedLog());
+        });
+
+        VBox layout = new VBox(10, btnRefresh, txtAreaLog);
+        layout.setPadding(new Insets(15));
+        VBox.setVgrow(txtAreaLog, Priority.ALWAYS);
+        tab.setContent(layout);
+        return tab;
+    }
+
+    private void loadCss(Scene scene) {
+        try {
+            scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        } catch (Exception e) {
+            // Fallback default inline css if resource file not found
+        }
+    }
 }
