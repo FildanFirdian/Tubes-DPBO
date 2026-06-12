@@ -8,6 +8,41 @@
             "type": "java",
             "name": "Launcher",
             "request": "launch",
+            "mainClass": "Launcher",
+            "projectName": "laundryapp"
+        },
+        {
+            "type": "java",
+            "name": "Launcher",
+            "request": "launch",
+            "mainClass": "main.Launcher",
+            "projectName": "laundryapp"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "main.Main",
+            "projectName": "laundryapp"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "laundry/main.Main",
+            "projectName": "laundryapp"
+        },
+        {
+            "type": "java",
+            "name": "Launcher",
+            "request": "launch",
+            "mainClass": "laundry/main.Launcher",
+            "projectName": "laundryapp"
+        },
+        {
+            "type": "java",
+            "name": "Launcher",
+            "request": "launch",
             "mainClass": "main.Launcher",
             "projectName": "Tubes-DPBO_b03a2cbd"
         },
