@@ -13,23 +13,23 @@ public abstract class Layanan {
             String jenisProses) {
 
         if (idLayanan <= 0) {
-            idLayanan = 1;
+            throw new IllegalArgumentException("ID layanan harus lebih dari 0");
         }
 
         if (namaLayanan == null || namaLayanan.isEmpty()) {
-            namaLayanan = "Tidak Diketahui";
+            throw new IllegalArgumentException("Nama layanan tidak boleh kosong");
         }
 
         if (hargaPerKg <= 0) {
-            hargaPerKg = 0;
+            throw new IllegalArgumentException("Harga per Kg harus lebih dari 0");
         }
 
         if (estimasiHari < 0) {
-            estimasiHari = 0;
+            throw new IllegalArgumentException("Estimasi hari tidak boleh negatif");
         }
 
         if (jenisProses == null || jenisProses.isEmpty()) {
-            jenisProses = "Reguler";
+            throw new IllegalArgumentException("Jenis proses tidak boleh kosong");
         }
 
         this.idLayanan = idLayanan;

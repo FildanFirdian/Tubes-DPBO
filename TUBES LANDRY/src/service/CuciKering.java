@@ -13,7 +13,7 @@ public class CuciKering extends Layanan {
     public double hitungBiaya(double berat) {
 
         if (berat <= 0) {
-            return 0;
+            throw new IllegalArgumentException("Berat laundry harus lebih dari 0 Kg");
         }
 
         return berat * getHargaPerKg();

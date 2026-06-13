@@ -2,43 +2,43 @@ package service;
 
 public class SetrikaSaja extends Layanan {
 
-    private double diskon;
+    private double penguranganBiaya;
 
     public SetrikaSaja(int idLayanan, String namaLayanan,
             double hargaPerKg, int estimasiHari,
             String jenisProses,
-            double diskon) {
+            double penguranganBiaya) {
 
         super(idLayanan, namaLayanan, hargaPerKg, estimasiHari, jenisProses);
 
-        if (diskon < 0) {
-            diskon = 0;
+        if (penguranganBiaya < 0) {
+            throw new IllegalArgumentException("Pengurangan biaya tidak boleh negatif");
         }
 
-        this.diskon = diskon;
+        this.penguranganBiaya = penguranganBiaya;
     }
 
-    public double getDiskon() {
-        return diskon;
+    public double getPenguranganBiaya() {
+        return penguranganBiaya;
     }
 
-    public void setDiskon(double diskon) {
-        if (diskon < 0) {
-            diskon = 0;
+    public void setPenguranganBiaya(double penguranganBiaya) {
+        if (penguranganBiaya < 0) {
+            throw new IllegalArgumentException("Pengurangan biaya tidak boleh negatif");
         }
 
-        this.diskon = diskon;
+        this.penguranganBiaya = penguranganBiaya;
     }
 
     @Override
     public double hitungBiaya(double berat) {
 
         if (berat <= 0) {
-            return 0;
+            throw new IllegalArgumentException("Berat laundry harus lebih dari 0 Kg");
         }
 
         double subtotal = berat * getHargaPerKg();
-        double potongan = subtotal * diskon;
+        double potongan = subtotal * penguranganBiaya;
 
         return subtotal - potongan;
     }
@@ -46,7 +46,7 @@ public class SetrikaSaja extends Layanan {
     @Override
     public String deskripsiLayanan() {
         return "Setrika Saja - " + getJenisProses() +
-                " | Diskon: " + (diskon * 100) + "%" +
+                " | Pengurangan biaya: " + (penguranganBiaya * 100) + "%" +
                 " (" + getEstimasiHari() + " Hari)";
     }
 }

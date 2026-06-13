@@ -24,7 +24,7 @@ public class CuciSetrika extends Layanan {
 
     public void setBiayaTambahan(double biayaTambahan) {
         if (biayaTambahan < 0) {
-            biayaTambahan = 0;
+            throw new IllegalArgumentException("Biaya tambahan tidak boleh negatif");
         }
 
         this.biayaTambahan = biayaTambahan;
@@ -34,7 +34,7 @@ public class CuciSetrika extends Layanan {
     public double hitungBiaya(double berat) {
 
         if (berat <= 0) {
-            return 0;
+            throw new IllegalArgumentException("Berat laundry harus lebih dari 0 Kg");
         }
 
         return (berat * getHargaPerKg()) + biayaTambahan;
