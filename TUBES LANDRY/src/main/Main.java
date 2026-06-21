@@ -15,12 +15,13 @@ import javafx.stage.Stage;
 import service.*;
 import sistem.*;
 
+import java.sql.*;
 import java.util.ArrayList;
 
 public class Main extends Application {
 
     private Stage primaryStage;
-    private Admin currentAdmin = new Admin(1, "admin", "admin123", "Super Admin");
+    private Admin currentAdmin = null;
     
     // In-Memory Database Dummy Data
     private ObservableList<Pelanggan> dataPelanggan = FXCollections.observableArrayList();
@@ -36,15 +37,10 @@ public class Main extends Application {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Sistem Manajemen Laundry Modern");
         
-        // Seed Awal Data Layanan
-        daftarLayanan.addAll(
-            new CuciKering(101, "Cuci Kering Reguler", 6000, 2, "Mesin Otomatis"),
-            new CuciSetrika(102, "Cuci Setrika Kilat", 9000, 1, "Setrika Uap", 2000),
-            new SetrikaSaja(103, "Setrika Hemat", 4000, 2, "Manual", 0.10) // Diskon 10%
-        );
-        
-        // Seed Awal Data Pelanggan
-        dataPelanggan.add(new Pelanggan(1, "Budi Santoso", "0812345678", "Bandung", 10, "budi", "pwd"));
+        // Load data from Database
+        loadLayananFromDatabase();
+        loadPelangganFromDatabase();
+        loadTransaksiFromDatabase();
 
         showLoginScene();
     }
@@ -55,7 +51,7 @@ public class Main extends Application {
         root.setAlignment(Pos.CENTER);
         root.getStyleClass().add("login-container");
 
-        Label titleLabel = new Label("LAUNDRY ENGINE LOGIN");
+        Label titleLabel = new Label("Washly");
         titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         GridPane grid = new GridPane();
@@ -73,12 +69,14 @@ public class Main extends Application {
         grid.add(new Label("Password:"), 0, 1);
         grid.add(txtPassword, 1, 1);
 
-        Button btnLogin = new Button("Login System");
+        Button btnLogin = new Button("Login");
         Label lblError = new Label();
         lblError.setStyle("-fx-text-fill: red;");
 
         btnLogin.setOnAction(e -> {
-            if (currentAdmin.login(txtUsername.getText(), txtPassword.getText())) {
+            Admin admin = loginAdmin(txtUsername.getText(), txtPassword.getText());
+            if (admin != null) {
+                currentAdmin = admin;
                 showDashboardScene();
             } else {
                 lblError.setText("Kombinasi User/Password Salah!");
@@ -148,10 +146,20 @@ public class Main extends Application {
         table.getColumns().addAll(colId, colNama, colHP, colAlamat);
 
         btnAdd.setOnAction(e -> {
-            if (!txtNama.getText().isEmpty()) {
-                int newId = dataPelanggan.size() + 1;
-                dataPelanggan.add(new Pelanggan(newId, txtNama.getText(), txtHP.getText(), txtAlamat.getText(), newId, "user"+newId, "pass"));
-                txtNama.clear(); txtHP.clear(); txtAlamat.clear();
+            String nama = txtNama.getText();
+            String hp = txtHP.getText();
+            String alamat = txtAlamat.getText();
+            if (!nama.isEmpty()) {
+                String genUser = "user_" + System.currentTimeMillis();
+                String genPass = "pass";
+                
+                if (savePelangganToDatabase(nama, hp, alamat, genUser, genPass)) {
+                    loadPelangganFromDatabase();
+                    txtNama.clear(); txtHP.clear(); txtAlamat.clear();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Gagal menyimpan pelanggan!");
+                    alert.showAndWait();
+                }
             }
         });
 
@@ -207,17 +215,17 @@ public class Main extends Application {
             try {
                 double berat = Double.parseDouble(txtBerat.getText());
                 if (pel != null && lay != null) {
-                    Transaksi trans = new Transaksi(dataTransaksi.size() + 1001, pel);
-                    DetailTransaksi detail = new DetailTransaksi(trans.getIdTransaksi(), berat, lay);
-                        trans.tambahDetail(detail);
-                        dataTransaksi.add(trans);
-                    DetailTransactionBuilder(trans, berat, lay);
-                    dataTransaksi.add(trans);
-                    
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Transaksi Berhasil Ditambahkan!");
-                    alert.showAndWait();
-                    txtBerat.clear();
-                    lblSubtotal.setText("Subtotal: Rp0");
+                    double cost = lay.hitungBiaya(berat);
+                    if (saveTransaksiToDatabase(pel.getIdPelanggan(), berat, lay.getIdLayanan(), cost)) {
+                        loadTransaksiFromDatabase();
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Transaksi Berhasil Ditambahkan!");
+                        alert.showAndWait();
+                        txtBerat.clear();
+                        lblSubtotal.setText("Subtotal: Rp0");
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Gagal menyimpan transaksi!");
+                        alert.showAndWait();
+                    }
                 }
             } catch (Exception ex) {
                 // Silently safe fallback inside JavaFX
@@ -259,6 +267,266 @@ public class Main extends Application {
             scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         } catch (Exception e) {
             // Fallback default inline css if resource file not found
+        }
+    }
+
+    private void loadLayananFromDatabase() {
+        daftarLayanan.clear();
+        String query = "SELECT * FROM layanan";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            while (rs.next()) {
+                int id = rs.getInt("id_layanan");
+                String nama = rs.getString("nama_layanan");
+                double harga = rs.getDouble("harga_per_kg");
+                int estimasi = rs.getInt("estimasi_hari");
+                String proses = rs.getString("jenis_proses");
+                String tipe = rs.getString("tipe_layanan");
+                
+                if ("CuciKering".equals(tipe)) {
+                    daftarLayanan.add(new CuciKering(id, nama, harga, estimasi, proses));
+                } else if ("CuciSetrika".equals(tipe)) {
+                    double biayaTambahan = rs.getDouble("biaya_tambahan");
+                    daftarLayanan.add(new CuciSetrika(id, nama, harga, estimasi, proses, biayaTambahan));
+                } else if ("SetrikaSaja".equals(tipe)) {
+                    double penguranganBiaya = rs.getDouble("pengurangan_biaya");
+                    daftarLayanan.add(new SetrikaSaja(id, nama, harga, estimasi, proses, penguranganBiaya));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadPelangganFromDatabase() {
+        dataPelanggan.clear();
+        String query = "SELECT p.*, u.username, u.password FROM pelanggan p JOIN user u ON p.id_user = u.id_user";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            while (rs.next()) {
+                int idPelanggan = rs.getInt("id_pelanggan");
+                String nama = rs.getString("nama");
+                String noHP = rs.getString("no_hp");
+                String alamat = rs.getString("alamat");
+                int idUser = rs.getInt("id_user");
+                String user = rs.getString("username");
+                String pass = rs.getString("password");
+                
+                dataPelanggan.add(new Pelanggan(idPelanggan, nama, noHP, alamat, idUser, user, pass));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadTransaksiFromDatabase() {
+        dataTransaksi.clear();
+        String query = "SELECT t.*, p.id_user, p.nama, p.no_hp, p.alamat, u.username, u.password, s.nama_status " +
+                       "FROM transaksi t " +
+                       "JOIN pelanggan p ON t.id_pelanggan = p.id_pelanggan " +
+                       "JOIN user u ON p.id_user = u.id_user " +
+                       "JOIN status_laundry s ON t.id_status = s.id_status";
+                       
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            while (rs.next()) {
+                int idTrans = rs.getInt("id_transaksi");
+                int idPel = rs.getInt("id_pelanggan");
+                String namaPel = rs.getString("nama");
+                String noHPPel = rs.getString("no_hp");
+                String alamatPel = rs.getString("alamat");
+                int idUserPel = rs.getInt("id_user");
+                String usernamePel = rs.getString("username");
+                String passwordPel = rs.getString("password");
+                
+                int idStatus = rs.getInt("id_status");
+                String namaStatus = rs.getString("nama_status");
+                
+                double jumlahBayar = rs.getDouble("jumlah_bayar");
+                String tanggal = rs.getString("tanggal");
+                
+                Pelanggan pel = new Pelanggan(idPel, namaPel, noHPPel, alamatPel, idUserPel, usernamePel, passwordPel);
+                
+                Transaksi trans = new Transaksi(idTrans, pel);
+                trans.setTanggal(tanggal);
+                trans.setStatusLaundry(new StatusLaundry(idStatus, namaStatus));
+                trans.setJumlahBayar(jumlahBayar);
+                
+                String detailQuery = "SELECT d.*, l.nama_layanan, l.harga_per_kg, l.estimasi_hari, l.jenis_proses, l.tipe_layanan, l.biaya_tambahan, l.pengurangan_biaya " +
+                                     "FROM detail_transaksi d " +
+                                     "JOIN layanan l ON d.id_layanan = l.id_layanan " +
+                                     "WHERE d.id_transaksi = ?";
+                                     
+                try (PreparedStatement detStmt = conn.prepareStatement(detailQuery)) {
+                    detStmt.setInt(1, idTrans);
+                    try (ResultSet detRs = detStmt.executeQuery()) {
+                        while (detRs.next()) {
+                            int idDetail = detRs.getInt("id_detail");
+                            double berat = detRs.getDouble("berat");
+                            int idLay = detRs.getInt("id_layanan");
+                            String namaLay = detRs.getString("nama_layanan");
+                            double hargaLay = detRs.getDouble("harga_per_kg");
+                            int estimasiLay = detRs.getInt("estimasi_hari");
+                            String prosesLay = detRs.getString("jenis_proses");
+                            String tipeLay = detRs.getString("tipe_layanan");
+                            
+                            Layanan lay = null;
+                            if ("CuciKering".equals(tipeLay)) {
+                                lay = new CuciKering(idLay, namaLay, hargaLay, estimasiLay, prosesLay);
+                            } else if ("CuciSetrika".equals(tipeLay)) {
+                                double biayaTambahan = detRs.getDouble("biaya_tambahan");
+                                lay = new CuciSetrika(idLay, namaLay, hargaLay, estimasiLay, prosesLay, biayaTambahan);
+                            } else if ("SetrikaSaja".equals(tipeLay)) {
+                                double penguranganBiaya = detRs.getDouble("pengurangan_biaya");
+                                lay = new SetrikaSaja(idLay, namaLay, hargaLay, estimasiLay, prosesLay, penguranganBiaya);
+                            }
+                            
+                            if (lay != null) {
+                                DetailTransaksi detail = new DetailTransaksi(idDetail, berat, lay);
+                                trans.getDetailList().add(detail);
+                            }
+                        }
+                    }
+                }
+                
+                dataTransaksi.add(trans);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Admin loginAdmin(String username, String password) {
+        String query = "SELECT a.id_admin, a.nama_admin, u.id_user, u.username, u.password " +
+                       "FROM admin a " +
+                       "JOIN user u ON a.id_user = u.id_user " +
+                       "WHERE u.username = ? AND u.password = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int idAdmin = rs.getInt("id_admin");
+                    String namaAdmin = rs.getString("nama_admin");
+                    int idUser = rs.getInt("id_user");
+                    String user = rs.getString("username");
+                    String pass = rs.getString("password");
+                    return new Admin(idAdmin, user, pass, namaAdmin);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private boolean savePelangganToDatabase(String nama, String noHP, String alamat, String username, String password) {
+        String insertUser = "INSERT INTO user (username, password) VALUES (?, ?)";
+        String insertPelanggan = "INSERT INTO pelanggan (id_user, nama, no_hp, alamat) VALUES (?, ?, ?, ?)";
+        
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+            
+            int idUser = -1;
+            try (PreparedStatement stmtUser = conn.prepareStatement(insertUser, Statement.RETURN_GENERATED_KEYS)) {
+                stmtUser.setString(1, username);
+                stmtUser.setString(2, password);
+                stmtUser.executeUpdate();
+                try (ResultSet rs = stmtUser.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        idUser = rs.getInt(1);
+                    }
+                }
+            }
+            
+            if (idUser == -1) {
+                conn.rollback();
+                return false;
+            }
+            
+            try (PreparedStatement stmtPel = conn.prepareStatement(insertPelanggan)) {
+                stmtPel.setInt(1, idUser);
+                stmtPel.setString(2, nama);
+                stmtPel.setString(3, noHP);
+                stmtPel.setString(4, alamat);
+                stmtPel.executeUpdate();
+            }
+            
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            if (conn != null) {
+                try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (conn != null) {
+                try { conn.close(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
+        }
+    }
+
+    private boolean saveTransaksiToDatabase(int idPelanggan, double berat, int idLayanan, double subtotal) {
+        String insertTrans = "INSERT INTO transaksi (id_pelanggan, tanggal, id_status, jumlah_bayar) VALUES (?, ?, ?, ?)";
+        String insertDetail = "INSERT INTO detail_transaksi (id_transaksi, id_layanan, berat, subtotal) VALUES (?, ?, ?, ?)";
+        
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+            
+            int idTrans = -1;
+            String tanggal = java.time.LocalDate.now().toString();
+            int idStatus = 1; // Default "Diproses"
+            
+            try (PreparedStatement stmtTrans = conn.prepareStatement(insertTrans, Statement.RETURN_GENERATED_KEYS)) {
+                stmtTrans.setInt(1, idPelanggan);
+                stmtTrans.setString(2, tanggal);
+                stmtTrans.setInt(3, idStatus);
+                stmtTrans.setDouble(4, subtotal);
+                stmtTrans.executeUpdate();
+                try (ResultSet rs = stmtTrans.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        idTrans = rs.getInt(1);
+                    }
+                }
+            }
+            
+            if (idTrans == -1) {
+                conn.rollback();
+                return false;
+            }
+            
+            try (PreparedStatement stmtDetail = conn.prepareStatement(insertDetail)) {
+                stmtDetail.setInt(1, idTrans);
+                stmtDetail.setInt(2, idLayanan);
+                stmtDetail.setDouble(3, berat);
+                stmtDetail.setDouble(4, subtotal);
+                stmtDetail.executeUpdate();
+            }
+            
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            if (conn != null) {
+                try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (conn != null) {
+                try { conn.close(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
         }
     }
 }

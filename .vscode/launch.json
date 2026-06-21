@@ -8,57 +8,24 @@
             "type": "java",
             "name": "Launcher",
             "request": "launch",
-            "mainClass": "Launcher",
-            "projectName": "laundryapp"
-        },
-        {
-            "type": "java",
-            "name": "Launcher",
-            "request": "launch",
-            "mainClass": "main.Launcher",
-            "projectName": "laundryapp"
-        },
-        {
-            "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "main.Main",
-            "projectName": "laundryapp"
-        },
-        {
-            "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "laundry/main.Main",
-            "projectName": "laundryapp"
-        },
-        {
-            "type": "java",
-            "name": "Launcher",
-            "request": "launch",
-            "mainClass": "laundry/main.Launcher",
-            "projectName": "laundryapp"
-        },
-        {
-            "type": "java",
-            "name": "Launcher",
-            "request": "launch",
             "mainClass": "main.Launcher",
             "projectName": "Tubes-DPBO_b03a2cbd"
         },
         {
             "type": "java",
-            "name": "Main",
+            "name": "Laundry App (Launcher)",
             "request": "launch",
-            "mainClass": "main.Main",
-            "projectName": "Tubes-DPBO_b03a2cbd"
+            "mainClass": "main.Launcher",
+            "projectName": "laundryapp",
+            "vmArgs": "--module-path \"${workspaceFolder}/TUBES LANDRY/lib\" --add-modules javafx.controls,javafx.fxml"
         },
         {
             "type": "java",
-            "name": "Current File",
+            "name": "Laundry App (Main)",
             "request": "launch",
-            "mainClass": "aplikasi",
-            "vmArgs": "-- modul-path \"C:\\Users\\Azizi\\Documents\\GitHub\\Tubes-DPBO\\TUBES LANDRY\\lib\" add-modules javafx.controls,javafx.fxml\""
+            "mainClass": "main.Main",
+            "projectName": "laundryapp",
+            "vmArgs": "--module-path \"${workspaceFolder}/TUBES LANDRY/lib\" --add-modules javafx.controls,javafx.fxml"
         }
     ]
 }
