@@ -4,28 +4,27 @@ import java.util.Collection;
 
 public class LaporanTransaksi implements CetakDokumen {
 
+    private String periode;
     private Collection<Transaksi> daftarTransaksi;
 
-    public LaporanTransaksi(Collection<Transaksi> daftarTransaksi) {
+    public LaporanTransaksi(String periode, Collection<Transaksi> dafTransaksi) {
+        this.periode = periode;
         this.daftarTransaksi = daftarTransaksi;
+    }
+
+    public double hitungTotalPendapatan() {
+        double total = 0;
+
+        for (Transaksi transaksi : daftarTransaksi) {
+            total += transaksi.getTotalHarga();
+        }
+        return total;
     }
 
     @Override
     public void cetakDokumen() {
-        System.out.println("===== LAPORAN TRANSAKSI =====");
-        for (Transaksi t : daftarTransaksi) {
-            System.out.println("ID : " + t.getIdTransaksi() + " | Total : " + t.getTotalHarga());
-        }
-    }
-
-    // GANTI / TAMBAHKAN METHOD INI AGAR EROR DI MAIN.JAVA HILANG
-    public String getFormattedLog() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("===== LAPORAN TRANSAKSI =====\n");
-        for (Transaksi t : daftarTransaksi) {
-            sb.append("ID : ").append(t.getIdTransaksi())
-              .append(" | Total : Rp").append(t.getTotalHarga()).append("\n");
-        }
-        return sb.toString();
+        System.out.println("====== LAPORAN TRANSAKSI ======");
+        System.out.println("Periode: " + periode);
+        System.out.println("Total Pendapatan: Rp " + hitungTotalPendapatan());
     }
 }
