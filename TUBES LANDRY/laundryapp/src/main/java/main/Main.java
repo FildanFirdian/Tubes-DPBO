@@ -114,6 +114,7 @@ public class Main extends Application {
         Scene scene = new Scene(root, 850, 600);
         loadCss(scene);
         primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     private Tab createPelangganTab() {
@@ -136,12 +137,11 @@ public class Main extends Application {
         formGrid.add(new Label("Alamat:"), 0, 2);
         formGrid.add(txtAlamat, 1, 2);
 
-        // Membuat 3 Tombol Aksi (Simpan/Tambah, Edit, Hapus)
+        // Membuat Tombol Aksi
         Button btnAdd = new Button("Simpan Pelanggan");
         Button btnEdit = new Button("Edit Terpilih");
         Button btnHapus = new Button("Hapus Terpilih");
         
-        // Memasukkan tombol ke dalam HBox agar berjejer rapi ke samping
         HBox layoutTombol = new HBox(10, btnAdd, btnEdit, btnHapus);
         formGrid.add(layoutTombol, 1, 3);
 
@@ -156,9 +156,6 @@ public class Main extends Application {
         colAlamat.setCellValueFactory(new PropertyValueFactory<>("alamat"));
         table.getColumns().addAll(colId, colNama, colHP, colAlamat);
 
-        // ========================================================
-        //  AKSI TOMBOL SIMPAN (DUAL MODE: TAMBAH BARU / SIMPAN EDIT)
-        // ========================================================
         btnAdd.setOnAction(e -> {
             String nama = txtNama.getText().trim();
             String hp = txtHP.getText().trim();
@@ -176,8 +173,8 @@ public class Main extends Application {
                 pelangganSedangDiedit.setNoHP(hp);
                 pelangganSedangDiedit.setAlamat(alamat);
 
-                pelangganSedangDiedit = null; // Reset kembali penanda setelah selesai edit
-                btnAdd.setText("Simpan Pelanggan"); // Kembalikan teks asli tombol
+                pelangganSedangDiedit = null; 
+                btnAdd.setText("Simpan Pelanggan"); 
                 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "Data pelanggan berhasil diperbarui!");
                 alert.showAndWait();
@@ -190,28 +187,20 @@ public class Main extends Application {
                 alert.showAndWait();
             }
 
-            // Sinkronisasi data ulang ke komponen UI
             table.refresh();
             txtNama.clear(); 
             txtHP.clear(); 
             txtAlamat.clear();
         });
 
-        // ========================================================
-        //  AKSI TOMBOL EDIT
-        // ========================================================
         btnEdit.setOnAction(e -> {
             Pelanggan dipilih = table.getSelectionModel().getSelectedItem();
             
             if (dipilih != null) {
-                pelangganSedangDiedit = dipilih; // Tandai data objek pelanggan yang diklik
-                
-                // Salin data objek ke dalam TextField inputan
+                pelangganSedangDiedit = dipilih; 
                 txtNama.setText(dipilih.getNama());
                 txtHP.setText(dipilih.getNoHP());
                 txtAlamat.setText(dipilih.getAlamat());
-                
-                // Beri penanda tekstual pada tombol utama
                 btnAdd.setText("Simpan Perubahan");
             } else {
                 Alert alert = new Alert(Alert.AlertType.WARNING, "Silakan pilih salah satu baris pelanggan di tabel terlebih dahulu!");
@@ -219,16 +208,12 @@ public class Main extends Application {
             }
         });
 
-        // ========================================================
-        //  AKSI TOMBOL HAPUS
-        // ========================================================
         btnHapus.setOnAction(e -> {
             Pelanggan dipilih = table.getSelectionModel().getSelectedItem();
             
             if (dipilih != null) {
-                dataPelanggan.remove(dipilih); // Hapus objek data dari ObservableList database
+                dataPelanggan.remove(dipilih); 
                 table.refresh();
-                
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "Data pelanggan berhasil dihapus!");
                 alert.showAndWait();
             } else {
@@ -274,35 +259,55 @@ public class Main extends Application {
         btnHitung.setOnAction(e -> {
             try {
                 Layanan lay = cbLayanan.getValue();
-                double berat = Double.parseDouble(txtBerat.getText());
-                if (lay != null) {
-                    lblSubtotal.setText("Subtotal: Rp" + lay.hitungBiaya(berat) + " (" + lay.deskripsiLayanan() + ")");
+                if (lay == null) {
+                    lblSubtotal.setText("Pilih layanan terlebih dahulu!");
+                    return;
                 }
+                
+                double berat = Double.parseDouble(txtBerat.getText());
+                lblSubtotal.setText("Subtotal: Rp" + lay.hitungBiaya(berat) + " (" + lay.deskripsiLayanan() + ")");
+                
             } catch (NumberFormatException ex) {
-                lblSubtotal.setText("Input berat tidak valid!");
+                lblSubtotal.setText("Input berat tidak valid (Harus Angka)!");
+            } catch (IllegalArgumentException ex) {
+                lblSubtotal.setText("Eror: " + ex.getMessage()); 
             }
         });
 
         btnSimpan.setOnAction(e -> {
             Pelanggan pel = cbPelanggan.getValue();
             Layanan lay = cbLayanan.getValue();
+            
+            if (pel == null || lay == null) {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "Silakan pilih Pelanggan dan Layanan terlebih dahulu!");
+                alert.showAndWait();
+                return;
+            }
+
             try {
                 double berat = Double.parseDouble(txtBerat.getText());
-                if (pel != null && lay != null) {
-                    Transaksi trans = new Transaksi(dataTransaksi.size() + 1001, pel);
-                    DetailTransaksi detail = new DetailTransaksi(trans.getIdTransaksi(), berat, lay);
-                    trans.tambahDetail(detail);
-                    dataTransaksi.add(trans);
-                    DetailTransactionBuilder(trans, berat, lay);
-                    dataTransaksi.add(trans);
-                    
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Transaksi Berhasil Ditambahkan!");
-                    alert.showAndWait();
-                    txtBerat.clear();
-                    lblSubtotal.setText("Subtotal: Rp0");
-                }
+                
+                Transaksi trans = new Transaksi(dataTransaksi.size() + 1001, pel);
+                DetailTransaksi detail = new DetailTransaksi(trans.getIdTransaksi(), berat, lay);
+                trans.tambahDetail(detail);
+                
+                dataTransaksi.add(trans);
+                
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Transaksi Berhasil Ditambahkan!");
+                alert.showAndWait();
+                
+                txtBerat.clear();
+                lblSubtotal.setText("Subtotal: Rp0");
+                
+            } catch (NumberFormatException ex) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Gagal Simpan: Berat harus berupa angka!");
+                alert.showAndWait();
+            } catch (IllegalArgumentException ex) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Gagal Simpan: " + ex.getMessage());
+                alert.showAndWait();
             } catch (Exception ex) {
-                // Silently safe fallback inside JavaFX
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Terjadi kesalahan sistem: " + ex.getMessage());
+                alert.showAndWait();
             }
         });
 
@@ -310,6 +315,7 @@ public class Main extends Application {
         return tab;
     }
     
+    // Method pembantu (Helper)
     private void DetailTransactionBuilder(Transaksi trans, double berat, Layanan lay) {
         DetailTransaksi detail = new DetailTransaksi(trans.getIdTransaksi(), berat, lay);
         trans.tambahDetail(detail);
