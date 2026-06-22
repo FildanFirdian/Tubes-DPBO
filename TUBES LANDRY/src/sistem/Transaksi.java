@@ -38,12 +38,6 @@ public class Transaksi {
     public String getTanggal() { return tanggal; }
     public StatusLaundry getStatusLaundry() { return statusLaundry; }
     
-    public void setTanggal(String tanggal) { this.tanggal = tanggal; }
-    public void setStatusLaundry(StatusLaundry statusLaundry) { this.statusLaundry = statusLaundry; }
-    public void setJumlahBayar(double jumlahBayar) { this.jumlahBayar = jumlahBayar; }
-    public double getJumlahBayar() { return jumlahBayar; }
-    public List<DetailTransaksi> getDetailList() { return detailList; }
-    
     public double getTotalHarga() {
         return detailList.stream().mapToDouble(DetailTransaksi::getSubtotal).sum();
     }

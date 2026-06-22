@@ -1,17 +1,16 @@
 {
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
-        "TUBES LANDRY/lib/javafx.base-21.jar",
-        "TUBES LANDRY/lib/javafx.controls-21.jar",
-        "TUBES LANDRY/lib/javafx.fxml-21.jar",
-        "TUBES LANDRY/lib/javafx.graphics-21.jar",
-        "TUBES LANDRY/lib/javafx.media-21.jar",
-        "TUBES LANDRY/lib/javafx.swing-21.jar",
-        "TUBES LANDRY/lib/javafx.web-21.jar",
+        "TUBES LANDRY/lib/javafx.base.jar",
+        "TUBES LANDRY/lib/javafx.controls.jar",
+        "TUBES LANDRY/lib/javafx.fxml.jar",
+        "TUBES LANDRY/lib/javafx.graphics.jar",
+        "TUBES LANDRY/lib/javafx.media.jar",
+        "TUBES LANDRY/lib/javafx.swing.jar",
+        "TUBES LANDRY/lib/javafx.web.jar",
         "TUBES LANDRY/lib/javafx-swt.jar",
         "TUBES LANDRY/lib/jdk.jsobject.jar",
         "TUBES LANDRY/lib/jfx.incubator.input.jar",
-        "TUBES LANDRY/lib/jfx.incubator.richtext.jar",
-        "TUBES LANDRY/lib/mysql-connector-j-8.4.0.jar"
+        "TUBES LANDRY/lib/jfx.incubator.richtext.jar"
     ]
 }
