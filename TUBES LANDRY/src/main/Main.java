@@ -75,7 +75,7 @@ public class Main extends Application {
         root.setAlignment(Pos.CENTER);
         root.setStyle("-fx-background-color: #1a1a2e;");
 
-        Label titleLabel = new Label("🧺 LAUNDRY ENGINE");
+        Label titleLabel = new Label("Washly System");
         titleLabel.setStyle("-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #e94560;");
 
         Label subLabel = new Label("Sistem Manajemen Laundry");
