@@ -58,7 +58,7 @@ public class Main extends Application {
         root.setAlignment(Pos.CENTER);
         root.getStyleClass().add("login-container");
 
-        Label titleLabel = new Label("LAUNDRY ENGINE LOGIN");
+        Label titleLabel = new Label("Washly System");
         titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         GridPane grid = new GridPane();
@@ -76,7 +76,7 @@ public class Main extends Application {
         grid.add(new Label("Password:"), 0, 1);
         grid.add(txtPassword, 1, 1);
 
-        Button btnLogin = new Button("Login System");
+        Button btnLogin = new Button("Login");
         Label lblError = new Label();
         lblError.setStyle("-fx-text-fill: red;");
 
@@ -102,7 +102,7 @@ public class Main extends Application {
         HBox topBar = new HBox(15);
         topBar.setPadding(new Insets(15));
         topBar.setStyle("-fx-background-color: #2c3e50;");
-        Label welcomeLabel = new Label("Halo, Admin: " + currentAdmin.getNamaAdmin());
+        Label welcomeLabel = new Label("Halo, " + currentAdmin.getNamaAdmin());
         welcomeLabel.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
         topBar.getChildren().add(welcomeLabel);
         root.setTop(topBar);
