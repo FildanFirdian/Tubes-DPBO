@@ -97,9 +97,9 @@ INSERT IGNORE INTO status_laundry (id_status, nama_status) VALUES
 -- SEED DATA - Layanan
 -- ============================================================
 INSERT IGNORE INTO layanan VALUES
-(101, 'Cuci Kering Reguler', 6000, 2, 'Mesin Otomatis', 'CuciKering',  0,    0),
-(102, 'Cuci Setrika Kilat',  9000, 1, 'Setrika Uap',    'CuciSetrika', 2000, 0),
-(103, 'Setrika Hemat',       4000, 2, 'Manual',         'SetrikaSaja',  0,   0.1);
+(101, 'Cuci Kering',  6000, 2, 'Mesin Otomatis', 'CuciKering',  0,    0),
+(102, 'Cuci Setrika', 9000, 1, 'Setrika Uap',    'CuciSetrika', 2000, 0),
+(103, 'Setrika Saja', 4000, 2, 'Manual',         'SetrikaSaja',  0,   0.1);
 
 -- ============================================================
 -- SEED DATA - Admin (password: admin123)

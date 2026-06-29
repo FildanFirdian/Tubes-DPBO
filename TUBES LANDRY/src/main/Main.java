@@ -17,6 +17,7 @@ import sistem.*;
 
 import java.util.List;
 
+
 /**
  * Kelas utama aplikasi Sistem Manajemen Laundry berbasis JavaFX.
  *
@@ -96,9 +97,9 @@ public class Main extends Application {
         txtPassword.setPromptText("Password");
         txtPassword.setStyle("-fx-background-color: #0f3460; -fx-text-fill: white; -fx-prompt-text-fill: #888;");
 
-        grid.add(new Label("Username:") {{ setStyle("-fx-text-fill: #cccccc;"); }}, 0, 0);
+        grid.add(new Label("Username:") {{ setStyle("-fx-text-fill: white;"); }}, 0, 0);
         grid.add(txtUsername, 1, 0);
-        grid.add(new Label("Password:") {{ setStyle("-fx-text-fill: #cccccc;"); }}, 0, 1);
+        grid.add(new Label("Password:") {{ setStyle("-fx-text-fill: white;"); }}, 0, 1);
         grid.add(txtPassword, 1, 1);
 
         Button btnLogin = new Button("Login");
@@ -160,7 +161,7 @@ public class Main extends Application {
         topBar.setAlignment(Pos.CENTER_LEFT);
         topBar.setStyle("-fx-background-color: #16213e;");
 
-        Label welcomeLabel = new Label("🧺 Laundry Engine  |  Halo, " + currentAdmin.getNamaAdmin());
+        Label welcomeLabel = new Label("Washly System  |  Halo, " + currentAdmin.getNamaAdmin());
         welcomeLabel.setStyle("-fx-text-fill: #e94560; -fx-font-weight: bold; -fx-font-size: 15px;");
 
         Button btnLogout = new Button("Logout");
@@ -222,37 +223,55 @@ public class Main extends Application {
         txtAlamat.setPromptText("Alamat");
         TextField txtUsername = new TextField();
         txtUsername.setPromptText("Username login pelanggan");
-        PasswordField txtPassword = new PasswordField();
-        txtPassword.setPromptText("Password login pelanggan");
 
-        formGrid.add(new Label("Nama:"), 0, 0);
+        Label lblNama = new Label("Nama:");
+        lblNama.setStyle("-fx-text-fill: white;");
+        formGrid.add(lblNama, 0, 0);
         formGrid.add(txtNama, 1, 0);
-        formGrid.add(new Label("No HP:"), 0, 1);
+        
+        Label lblHP = new Label("No HP:");
+        lblHP.setStyle("-fx-text-fill: white;");
+        formGrid.add(lblHP, 0, 1);
         formGrid.add(txtHP, 1, 1);
-        formGrid.add(new Label("Alamat:"), 0, 2);
+        
+        Label lblAlamat = new Label("Alamat:");
+        lblAlamat.setStyle("-fx-text-fill: white;");
+        formGrid.add(lblAlamat, 0, 2);
         formGrid.add(txtAlamat, 1, 2);
-        formGrid.add(new Label("Username:"), 0, 3);
+        
+        Label lblUser = new Label("Username:");
+        lblUser.setStyle("-fx-text-fill: white;");
+        formGrid.add(lblUser, 0, 3);
         formGrid.add(txtUsername, 1, 3);
-        formGrid.add(new Label("Password:"), 0, 4);
-        formGrid.add(txtPassword, 1, 4);
+
+        // ----- TABEL PELANGGAN -----
+        TableView<Pelanggan> table = new TableView<>(dataPelanggan);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         Button btnTambah = new Button("➕ Tambah Pelanggan");
         Button btnEdit = new Button("✏ Edit Terpilih");
         Button btnHapus = new Button("🗑 Hapus Terpilih");
+        Button btnBatal = new Button("🔄 Bersihkan");
         Label lblStatus = new Label();
         lblStatus.setStyle("-fx-text-fill: green;");
 
         btnTambah.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-cursor: hand;");
         btnEdit.setStyle("-fx-background-color: #2980b9; -fx-text-fill: white; -fx-cursor: hand;");
         btnHapus.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-cursor: hand;");
+        btnBatal.setStyle("-fx-background-color: #7f8c8d; -fx-text-fill: white; -fx-cursor: hand;");
 
-        HBox btnBox = new HBox(10, btnTambah, btnEdit, btnHapus);
+        btnBatal.setOnAction(e -> {
+            table.getSelectionModel().clearSelection();
+            txtNama.clear();
+            txtHP.clear();
+            txtAlamat.clear();
+            txtUsername.clear();
+            lblStatus.setText("");
+        });
+
+        HBox btnBox = new HBox(10, btnTambah, btnEdit, btnHapus, btnBatal);
         formGrid.add(btnBox, 1, 5);
         formGrid.add(lblStatus, 1, 6);
-
-        // ----- TABEL PELANGGAN -----
-        TableView<Pelanggan> table = new TableView<>(dataPelanggan);
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         TableColumn<Pelanggan, Integer> colId = new TableColumn<>("ID");
         colId.setCellValueFactory(new PropertyValueFactory<>("idPelanggan"));
@@ -280,6 +299,12 @@ public class Main extends Application {
                 txtAlamat.setText(selected.getAlamat());
                 txtUsername.setText(selected.getUsername());
                 txtPassword.setText(selected.getPassword());
+            } else {
+                txtNama.clear();
+                txtHP.clear();
+                txtAlamat.clear();
+                txtUsername.clear();
+                txtPassword.clear();
             }
         });
 
@@ -457,14 +482,23 @@ public class Main extends Application {
         lblSubtotal.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #27ae60;");
 
         Label lblDeskripsi = new Label();
-        lblDeskripsi.setStyle("-fx-font-style: italic; -fx-text-fill: #888888;");
+        lblDeskripsi.setStyle("-fx-font-style: italic; -fx-text-fill: #cccccc;");
 
-        grid.add(new Label("Pelanggan:"), 0, 0);
+        Label lblPel = new Label("Pelanggan:");
+        lblPel.setStyle("-fx-text-fill: white;");
+        grid.add(lblPel, 0, 0);
         grid.add(cbPelanggan, 1, 0);
-        grid.add(new Label("Layanan:"), 0, 1);
+
+        Label lblLay = new Label("Layanan:");
+        lblLay.setStyle("-fx-text-fill: white;");
+        grid.add(lblLay, 0, 1);
         grid.add(cbLayanan, 1, 1);
-        grid.add(new Label("Berat (Kg):"), 0, 2);
+
+        Label lblBrt = new Label("Berat (Kg):");
+        lblBrt.setStyle("-fx-text-fill: white;");
+        grid.add(lblBrt, 0, 2);
         grid.add(txtBerat, 1, 2);
+
         grid.add(lblSubtotal, 1, 3);
         grid.add(lblDeskripsi, 1, 4);
 
@@ -600,7 +634,9 @@ public class Main extends Application {
         Button btnCari = new Button("🔍 Tampilkan Transaksi");
         btnCari.setStyle("-fx-background-color: #2980b9; -fx-text-fill: white; -fx-cursor: hand;");
 
-        topBox.getChildren().addAll(new Label("Pelanggan: "), cbPelanggan, btnCari);
+        Label lblPelFilter = new Label("Pelanggan: ");
+        lblPelFilter.setStyle("-fx-text-fill: white;");
+        topBox.getChildren().addAll(lblPelFilter, cbPelanggan, btnCari);
 
         // Tabel Transaksi
         TableView<Transaksi> tabelTransaksi = new TableView<>();
@@ -673,7 +709,7 @@ public class Main extends Application {
 
         // Tabel Detail Item
         Label lblDetail = new Label("Detail Item Layanan:");
-        lblDetail.setStyle("-fx-font-weight: bold; -fx-font-size: 13px;");
+        lblDetail.setStyle("-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: white;");
 
         TableView<DetailTransaksi> tabelDetail = new TableView<>();
         tabelDetail.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
